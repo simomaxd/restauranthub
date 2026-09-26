@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}" dir="{{ 'rtl' if current_lang == 'ar' else 'ltr' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ t.order_now }} - {{ product['name'] }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { margin: 0; padding: 0; background-color: #0b0e14; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar { background-color: #1a1f2b !important; border-bottom: 1px solid #2e3a4a; }
+        .navbar-brand { color: #00d4ff !important; font-weight: bold; font-size: 1.4rem; letter-spacing: 0.5px; }
+        h1 { color: #00d4ff; font-weight: 700; font-size: 2rem; letter-spacing: 1px; }
+        h3 { font-weight: 600; letter-spacing: 0.5px; }
+        .card { background-color: #1a1f2b; border: 1px solid #2e3a4a; border-radius: 12px; overflow: hidden; }
+        .card-img-top { height: 280px; object-fit: cover; }
+        .card-title { color: #ffffff; font-weight: 600; font-size: 1.5rem; }
+        .card-text { color: #b0b0b0; font-size: 1rem; line-height: 1.5; }
+        .price { color: #00d4ff; font-weight: bold; font-size: 1.8rem; letter-spacing: 0.5px; }
+        .form-control { background-color: #1a1f2b; color: #fff; border: 1px solid #2e3a4a; border-radius: 8px; }
+        .form-control:focus { background-color: #1a1f2b; color: #fff; border-color: #00d4ff; box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+        .btn-info { background-color: #00d4ff; border: none; color: #0b0e14; font-weight: 600; border-radius: 8px; padding: 10px 20px; }
+        .btn-info:hover { background-color: #00b3d9; color: #0b0e14; }
+        .btn-outline-info { border: 1px solid #00d4ff; color: #00d4ff; border-radius: 8px; padding: 10px 20px; }
+        .btn-outline-info:hover { background-color: #00d4ff; color: #0b0e14; }
+        label { color: #aaa; margin-bottom: 5px; font-weight: 500; }
+
+        /* Light Mode */
+        body.light-mode { background-color: #f8f9fa !important; color: #333 !important; }
+        body.light-mode .navbar { background-color: #ffffff !important; border-bottom: 1px solid #dee2e6; }
+        body.light-mode .navbar-brand { color: #007bff !important; }
+        body.light-mode .nav-link { color: #333 !important; }
+        body.light-mode .nav-link:hover { color: #007bff !important; }
+        body.light-mode h1 { color: #007bff; }
+        body.light-mode .card { background-color: #ffffff; border: 1px solid #dee2e6; color: #333; }
+        body.light-mode .card-title { color: #212529; }
+        body.light-mode .card-text { color: #6c757d; }
+        body.light-mode .price { color: #007bff; }
+        body.light-mode .form-control { background-color: #ffffff; color: #333; border: 1px solid #dee2e6; }
+        body.light-mode .form-control::placeholder { color: #999; }
+        body.light-mode label { color: #555; }
+        body.light-mode .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.7)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+        }
+        body.light-mode .navbar-toggler { border-color: #333 !important; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">🍽️ {{ t.site_name }}</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="/">{{ t.home }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/reserve">{{ t.reserve }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/reviews">{{ t.reviews }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/product_reviews">{{ t.dish_reviews }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/loyalty">{{ t.loyalty }}</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="/notifications">
+                            🔔
+                            {% if unread_notifications > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;">
+                                    {{ unread_notifications }}
+                                </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <button id="theme-toggle" class="btn btn-sm btn-outline-info">🌙</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">{{ t.order_now }}: {{ product['name'] }}</h1>
+        <div class="card mx-auto" style="max-width: 500px;">
+            <img src="/static/images/{{ product['image'] }}" class="card-img-top" alt="{{ product['name'] }}">
+            <div class="card-body">
+                <h3 class="card-title text-center">{{ product['name'] }}</h3>
+                <p class="card-text text-center">{{ product['description'] }}</p>
+                <p class="price text-center">${{ product['price'] }}</p>
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label>{{ t.your_name }}</label>
+                        <input type="text" name="customer_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>{{ t.phone_number }}</label>
+                        <input type="text" name="phone" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>{{ t.quantity }}</label>
+                        <input type="number" name="quantity" class="form-control" value="1" min="1" required>
+                    </div>
+                    <button type="submit" class="btn btn-info w-100">{{ t.place_order }}</button>
+                </form>
+
+                <a href="/" class="btn btn-outline-info w-100 mt-2">{{ t.back_to_menu }}</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center mt-5 py-4" style="border-top: 1px solid #2e3a4a; color: #666; font-size: 0.9rem;">
+        <p>&copy; 2026 {{ t.site_name }}. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const toggleBtn = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+
+        if (currentTheme === 'light') {
+            document.body.classList.add('light-mode');
+            toggleBtn.textContent = '☀️';
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            toggleBtn.textContent = isLight ? '☀️' : '🌙';
+        });
+    </script>
+</body>
+</html>
